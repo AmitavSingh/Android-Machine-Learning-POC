@@ -1,30 +1,34 @@
 package com.amitav.develop.androidmachinelearningpoc
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment.DIRECTORY_PICTURES
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.amitav.develop.androidmachinelearningpoc.Constants.TAG
 import com.amitav.develop.androidmachinelearningpoc.databinding.ActivityImageBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.label.ImageLabeler
 import com.google.mlkit.vision.label.ImageLabeling
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ImageActivity : AppCompatActivity() {
 
-    private val PERMISSION_REQUEST_CODE = 200
+
     private lateinit var binding: ActivityImageBinding
     private lateinit var getContent: ActivityResultLauncher<String>
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private lateinit var imageLabeler: ImageLabeler
+    private var cameraImageUri: Uri? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,28 +36,39 @@ class ImageActivity : AppCompatActivity() {
         binding = ActivityImageBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        init()
+
         imageLabeler = ImageLabeling.getClient(
             ImageLabelerOptions.Builder().setConfidenceThreshold(0.7f).build()
         )
+    }
 
-
-        if (!checkPermission()) {
-            requestPermission()
-        }
+    private fun init() {
 
         getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            binding.imageView.setImageURI(uri)
             if (uri != null) {
                 runClassification(uri)
             }
         }
+
+
+        takePictureLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+                if (isSuccess && cameraImageUri != null) {
+                    runClassification(cameraImageUri!!)
+                } else {
+                    Toast.makeText(this, "Failed to capture Image", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+
 
         binding.btnPickImage.setOnClickListener {
             imageChooser()
         }
 
         binding.btnStartCamera.setOnClickListener {
-
+            openCamera()
         }
     }
 
@@ -61,44 +76,36 @@ class ImageActivity : AppCompatActivity() {
         getContent.launch("image/*")
     }
 
-    private fun checkPermission(): Boolean {
-        val result = ContextCompat.checkSelfPermission(applicationContext, READ_EXTERNAL_STORAGE)
-        return result == PackageManager.PERMISSION_GRANTED
-    }
 
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(READ_EXTERNAL_STORAGE),
-            PERMISSION_REQUEST_CODE
+    private fun openCamera() {
+        val timeStamp = SimpleDateFormat.getDateTimeInstance().format(Date())
+        var fileDirectory = File(getExternalFilesDir(DIRECTORY_PICTURES), "ML_IMAGES")
+        if (!fileDirectory.exists()) {
+            fileDirectory.mkdir()
+        }
+        val photoFile = File(
+            fileDirectory.path,
+            "JPEG_${timeStamp}_.jpg"
         )
-    }
 
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty()) {
-                val storagePermission = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if (storagePermission) {
-                    Log.d(TAG, "onRequestPermissionsResult: External Storage Permission Given...")
-                } else {
-                    Log.d(TAG, "onRequestPermissionsResult: External Storage Permission denied...")
-                }
-            }
+        photoFile.also {
+            cameraImageUri = FileProvider.getUriForFile(
+                applicationContext,
+                BuildConfig.APPLICATION_ID + ".fileprovider",
+                it
+            )
+            takePictureLauncher.launch(cameraImageUri)
         }
     }
 
     private fun runClassification(imageUri: Uri) {
+        binding.imageView.setImageURI(imageUri)
+        Log.d(TAG, imageUri.path.toString())
         var inputImage = InputImage.fromFilePath(this, imageUri)
         imageLabeler.process(inputImage).addOnSuccessListener {
             if (it.size > 0) {
                 var string = StringBuilder()
-                for(imagelabel in it){
+                for (imagelabel in it) {
                     string.append(imagelabel.text)
                     string.append(" : ")
                     string.append(imagelabel.confidence)
