@@ -1,4 +1,4 @@
-package com.amitav.develop.androidmachinelearningpoc
+package com.amitav.develop.androidmachinelearningpoc.helpers
 
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.amitav.develop.androidmachinelearningpoc.BuildConfig
 import com.amitav.develop.androidmachinelearningpoc.Constants.TAG
 import com.amitav.develop.androidmachinelearningpoc.databinding.ActivityImageBinding
 import com.google.mlkit.vision.common.InputImage
@@ -21,13 +22,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class ImageActivity : AppCompatActivity() {
+open class ImageHelperActivity : AppCompatActivity() {
 
 
     private lateinit var binding: ActivityImageBinding
     private lateinit var getContent: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
-    private lateinit var imageLabeler: ImageLabeler
     private var cameraImageUri: Uri? = null
 
 
@@ -38,9 +38,7 @@ class ImageActivity : AppCompatActivity() {
 
         init()
 
-        imageLabeler = ImageLabeling.getClient(
-            ImageLabelerOptions.Builder().setConfidenceThreshold(0.7f).build()
-        )
+
     }
 
     private fun init() {
@@ -98,29 +96,13 @@ class ImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun runClassification(imageUri: Uri) {
-        binding.imageView.setImageURI(imageUri)
-        Log.d(TAG, imageUri.path.toString())
-        var inputImage = InputImage.fromFilePath(this, imageUri)
-        imageLabeler.process(inputImage).addOnSuccessListener {
-            if (it.size > 0) {
-                var string = StringBuilder()
-                for (imagelabel in it) {
-                    string.append(imagelabel.text)
-                    string.append(" : ")
-                    string.append(imagelabel.confidence)
-                    string.append("\n")
-                }
-                binding.textView.text = string.toString()
-            }
-
-        }
-            .addOnFailureListener {
-                it.stackTrace
-                Log.d(TAG, it.toString())
-            }
+    open fun runClassification(imageUri: Uri) {
 
     }
+
+    open fun getTextView() = binding.textView
+
+    open fun getImageView() = binding.imageView
 
 
 }

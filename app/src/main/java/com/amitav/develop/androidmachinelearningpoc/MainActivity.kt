@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.amitav.develop.androidmachinelearningpoc.databinding.ActivityMainBinding
+import com.amitav.develop.androidmachinelearningpoc.helpers.ImageHelperActivity
+import com.amitav.develop.androidmachinelearningpoc.image.FlowerClassificationActivity
+import com.amitav.develop.androidmachinelearningpoc.image.ImageClassificationActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,7 +31,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.button.setOnClickListener {
-            startActivity(Intent(this, ImageActivity::class.java))
+            startActivity(Intent(this, ImageClassificationActivity::class.java))
+        }
+
+        binding.button2.setOnClickListener {
+            startActivity(Intent(this, FlowerClassificationActivity::class.java))
         }
     }
 
