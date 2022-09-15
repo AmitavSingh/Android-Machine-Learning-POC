@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
             requestPermission()
         }
 
-
         binding.button.setOnClickListener {
             startActivity(Intent(this, ImageActivity::class.java))
         }
@@ -37,15 +36,15 @@ class MainActivity : AppCompatActivity() {
         val readStorage = ContextCompat.checkSelfPermission(
             applicationContext,
             Manifest.permission.READ_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
         val camera = ContextCompat.checkSelfPermission(
             applicationContext,
             Manifest.permission.CAMERA
-        ) != PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
         val writeStorage = ContextCompat.checkSelfPermission(
             applicationContext,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
         return readStorage && camera && writeStorage
 
     }
