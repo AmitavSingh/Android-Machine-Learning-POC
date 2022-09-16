@@ -17,3 +17,6 @@ The below Screenshots displays the Image Classification & Object Detection funct
 
 <h3>Plotting Detection results over the image</h3>
 <img src="PlottingResult.png" width="300px">
+
+<h3>Face Detection</h3>
+<img src="FaceDetection.png" width="300px">
