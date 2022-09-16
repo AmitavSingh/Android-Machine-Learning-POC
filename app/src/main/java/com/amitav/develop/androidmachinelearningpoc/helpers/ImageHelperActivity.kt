@@ -1,9 +1,9 @@
 package com.amitav.develop.androidmachinelearningpoc.helpers
 
+import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment.DIRECTORY_PICTURES
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -11,12 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.amitav.develop.androidmachinelearningpoc.BuildConfig
-import com.amitav.develop.androidmachinelearningpoc.Constants.TAG
 import com.amitav.develop.androidmachinelearningpoc.databinding.ActivityImageBinding
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.label.ImageLabeler
-import com.google.mlkit.vision.label.ImageLabeling
-import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -103,6 +98,45 @@ open class ImageHelperActivity : AppCompatActivity() {
     open fun getTextView() = binding.textView
 
     open fun getImageView() = binding.imageView
+
+    fun drawDetectionResult(
+        bitmap: Bitmap,
+        detectionResults: List<BoxWithLabel>
+    ){
+        val outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = Canvas(outputBitmap)
+        val pen = Paint()
+        pen.textAlign = Paint.Align.LEFT
+        for (box in detectionResults) {
+            // draw bounding box
+            pen.color = Color.RED
+            pen.strokeWidth = 8f
+            pen.style = Paint.Style.STROKE
+            canvas.drawRect(box.rect, pen)
+            val tagSize = Rect(0, 0, 0, 0)
+
+            // calculate the right font size
+            pen.style = Paint.Style.FILL_AND_STROKE
+            pen.color = Color.YELLOW
+            pen.strokeWidth = 2f
+            pen.textSize = 96f
+            pen.getTextBounds(box.text, 0, box.text.length, tagSize)
+            val fontSize: Float = pen.textSize * box.rect.width() / tagSize.width()
+
+            // adjust the font size so texts are inside the bounding box
+            if (fontSize < pen.textSize) {
+                pen.textSize = fontSize
+            }
+            var margin: Float = (box.rect.width() - tagSize.width()) / 2.0f
+            if (margin < 0f) margin = 0f
+            canvas.drawText(
+                box.text, box.rect.left + margin,
+                (box.rect.top + tagSize.height()).toFloat(), pen
+            )
+        }
+
+        binding.imageView.setImageBitmap(outputBitmap)
+    }
 
 
 }
