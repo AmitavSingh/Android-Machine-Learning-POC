@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.amitav.develop.androidmachinelearningpoc.databinding.ActivityMainBinding
 import com.amitav.develop.androidmachinelearningpoc.helpers.ImageHelperActivity
+import com.amitav.develop.androidmachinelearningpoc.image.FaceDetectionActivity
 import com.amitav.develop.androidmachinelearningpoc.image.FlowerClassificationActivity
 import com.amitav.develop.androidmachinelearningpoc.image.ImageClassificationActivity
 import com.amitav.develop.androidmachinelearningpoc.image.ObjectDetectionActivity
@@ -41,6 +42,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.button3.setOnClickListener {
             startActivity(Intent(this, ObjectDetectionActivity::class.java))
+        }
+
+        binding.button4.setOnClickListener {
+            startActivity(Intent(this, FaceDetectionActivity::class.java))
         }
     }
 

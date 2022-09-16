@@ -54,4 +54,7 @@ dependencies {
     //Object Detection
     implementation 'com.google.mlkit:object-detection:17.0.0'
 
+    //Face Detection
+    implementation 'com.google.mlkit:face-detection:16.1.5'
+
 }

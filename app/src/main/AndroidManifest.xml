@@ -27,6 +27,9 @@
             android:name=".image.ObjectDetectionActivity"
             android:exported="false" />
         <activity
+            android:name=".image.FaceDetectionActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
