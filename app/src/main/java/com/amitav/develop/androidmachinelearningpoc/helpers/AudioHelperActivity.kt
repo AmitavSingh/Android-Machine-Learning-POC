@@ -33,6 +33,8 @@ open class AudioHelperActivity : AppCompatActivity() {
     protected open fun stopRecording() {
         binding.startRecording.isEnabled = true
         binding.stopRecording.isEnabled = false
+        binding.textOutput.text = ""
+        binding.textSpecifications.text = ""
     }
 
     fun getSpecsTextView() = binding.textSpecifications

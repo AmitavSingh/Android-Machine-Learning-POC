@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.amitav.develop.androidmachinelearningpoc.audio.AudioClassificationActivity
+import com.amitav.develop.androidmachinelearningpoc.audio.BirdIdentifierActivity
 import com.amitav.develop.androidmachinelearningpoc.databinding.ActivityMainBinding
 import com.amitav.develop.androidmachinelearningpoc.helpers.AudioHelperActivity
 import com.amitav.develop.androidmachinelearningpoc.image.FaceDetectionActivity
@@ -51,6 +52,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.button5.setOnClickListener {
             startActivity(Intent(this, AudioClassificationActivity::class.java))
+        }
+
+        binding.btnBirdIdentification.setOnClickListener {
+            startActivity(Intent(this, BirdIdentifierActivity::class.java))
         }
     }
 

@@ -20,6 +20,8 @@
         <activity
             android:name=".audio.AudioClassificationActivity" />
         <activity
+            android:name=".audio.BirdIdentifierActivity" />
+        <activity
             android:name=".image.ImageClassificationActivity"
             android:exported="false" />
         <activity

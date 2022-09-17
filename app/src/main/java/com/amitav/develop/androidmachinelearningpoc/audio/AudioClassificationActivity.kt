@@ -39,6 +39,8 @@ class AudioClassificationActivity: AudioHelperActivity() {
         audioRecord.startRecording()
 
         timerTask = Timer().scheduleAtFixedRate(1, 500) {
+
+            tensorAudio.load(audioRecord)
             val output: List<Classifications> = audioClassifier.classify(tensorAudio)
             val finalOutput: MutableList<Category> = ArrayList()
             for (classifications in output) {
