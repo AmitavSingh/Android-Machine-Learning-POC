@@ -60,5 +60,8 @@ dependencies {
     // Audio Classification
     implementation 'org.tensorflow:tensorflow-lite-task-audio:0.2.0'
 
+    //Text Classification
+    implementation 'org.tensorflow:tensorflow-lite-task-text:0.1.0'
+
 
 }

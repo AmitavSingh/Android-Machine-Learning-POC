@@ -13,10 +13,12 @@ import com.amitav.develop.androidmachinelearningpoc.audio.AudioClassificationAct
 import com.amitav.develop.androidmachinelearningpoc.audio.BirdIdentifierActivity
 import com.amitav.develop.androidmachinelearningpoc.databinding.ActivityMainBinding
 import com.amitav.develop.androidmachinelearningpoc.helpers.AudioHelperActivity
+import com.amitav.develop.androidmachinelearningpoc.helpers.TextHelperActivity
 import com.amitav.develop.androidmachinelearningpoc.image.FaceDetectionActivity
 import com.amitav.develop.androidmachinelearningpoc.image.FlowerClassificationActivity
 import com.amitav.develop.androidmachinelearningpoc.image.ImageClassificationActivity
 import com.amitav.develop.androidmachinelearningpoc.image.ObjectDetectionActivity
+import com.amitav.develop.androidmachinelearningpoc.text.SpamDetectionActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,6 +58,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnBirdIdentification.setOnClickListener {
             startActivity(Intent(this, BirdIdentifierActivity::class.java))
+        }
+
+        binding.btnTextHelper.setOnClickListener {
+            startActivity(Intent(this, SpamDetectionActivity::class.java))
         }
     }
 
